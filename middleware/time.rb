@@ -16,24 +16,33 @@ class Timer
       query = query[6,50]
       str = ''
       data = query.split("%2C")
+      unknow_time_format = []
       data.each do |data|
-        if data == "year"
-          str = (Time.now.year.to_s + '-')
-        elsif data == "month"
-          str += (Time.now.month.to_s + '-') 
-        elsif data == "day"
-          str += (Time.now.day.to_s + '-')
-        elsif data == "hour"
-          str += (Time.now.hour.to_s + '-')
-        elsif data == "minute"
-          str += (Time.now.min.to_s + '-')
-        elsif data == "second"
-          str += (Time.now.sec.to_s + '-')
-        elsif ["year","month","day","hour","minute","second"].exclude?(date)
-          [400, {}, ["Format not allowed: #{data}"]]
+        if ["year","month","day","hour","minute","second"].none? { |n| data == n  }
+          unknow_time_format << data
+        else
+          if data == "year"
+            str = (Time.now.year.to_s + '-')
+          elsif data == "month"
+            str += (Time.now.month.to_s + '-') 
+          elsif data == "day"
+            str += (Time.now.day.to_s + '-')
+          elsif data == "hour"
+            str += (Time.now.hour.to_s + '-')
+          elsif data == "minute"
+            str += (Time.now.min.to_s + '-')
+          elsif data == "second"
+            str += (Time.now.sec.to_s + '-')
+          end
         end
       end
-      str = str[0...-1]
+      if unknow_time_format.empty?
+        @status = 200 
+        str = str[0...-1]
+      else 
+        @status = 400
+        str = "Unknown time format #{unknow_time_format.to_s}"
+      end
       [@status, @headers, ["#{str}"]]
     else
       path_not_allowed(path)
