@@ -29,6 +29,8 @@ class Timer
           str += (Time.now.min.to_s + '-')
         elsif data == "second"
           str += (Time.now.sec.to_s + '-')
+        elsif ["year","month","day","hour","minute","second"].exclude?(date)
+          [400, {}, ["Format not allowed: #{data}"]]
         end
       end
       str = str[0...-1]
@@ -44,4 +46,4 @@ class Timer
 
 end
 
-#Time.now.strftime "%Y-%d-%m %H:%M:%S %z"
+
